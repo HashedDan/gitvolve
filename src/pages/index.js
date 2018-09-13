@@ -9,7 +9,8 @@ class IndexPage extends Component {
     this.handleChange = this.handleChange.bind(this)
     this.printClick = this.printClick.bind(this)
     this.state = {
-      input: ""
+      input: "",
+      tree: []
     }
   }
 
@@ -25,12 +26,34 @@ class IndexPage extends Component {
   printClick() {
     console.log("CLICK")
     console.log()
+    // Get List of Commits
     axios({
       method:'get',
       url:'https://api.github.com/repos/'+ this.state.input +'/commits',
       responseType:'json'
     })
-    .then(data=>console.log(data))
+    .then(data=>{
+      console.log(data)
+      var tree = data.request.response
+      var temp = []
+      count = 0
+      for (var i = 0; i < tree.length; i++){
+        var obj = tree[i];
+        console.log(obj)
+        // Get List of Files for each Commit
+        axios({
+          method:'get',
+          url: obj.commit.tree.url,
+          responseType:'json'
+        })
+        .then(res=>{
+          console.log(res)
+          count++
+        })
+        .catch(err=>console.log(err))
+      }
+      console.log("COUNT: " + count)
+    })
     .catch(err=>console.log(err))
   }
 
@@ -42,6 +65,9 @@ class IndexPage extends Component {
       <div>
         <input id="input" placeholder="GitHub Repository" value={input} onChange={this.handleChange}></input>
         <button type="button" onClick={this.printClick}>Hatch</button>
+        <div id="viz">
+
+        </div>
       </div>
     )
   }
