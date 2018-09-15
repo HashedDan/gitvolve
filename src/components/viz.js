@@ -17,11 +17,14 @@ class Viz extends Component {
     }
 
     createBarChart() {
+        // Remove SVG if it already exists
+        d3.select("svg").remove()
+
         const height = 500
         const width = 500
         const node = this.node
         const radius = (Math.min(height, width) / 2) - 10
-        const color = d3.scaleOrdinal(d3.schemeCategory20)
+        const color = d3.scaleOrdinal(d3.schemeCategory10)
         const formatNumber = d3.format(",d")
         const partition = d3.partition()
 
@@ -45,7 +48,20 @@ class Viz extends Component {
         .append("g")
             .attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
 
-        d3.select(self.frameElement).style("height", height + "px");
+        d3.json("https://gist.githubusercontent.com/mbostock/4348373/raw/85f18ac90409caa5529b32156aa6e71cf985263f/flare.json").then(function(data) {
+            var root = d3.hierarchy(data)
+            root.sum(function(d) { return d.size; })
+            svg.selectAll("path")
+                .data(partition(root).descendants())
+                .enter().append("path")
+                .attr("d", arc)
+                .style("fill", function(d) { return color((d.children ? d : d.parent).data.name) })
+                // .on("click", click)
+                .append("title")
+                .text(function(d) { return d.data.name + "\n" + formatNumber(d.value) })
+        })
+
+        d3.select(self.frameElement).style("height", height + "px")
     }
     render() {
         return <div id="viz"></div>

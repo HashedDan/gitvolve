@@ -67,7 +67,7 @@ class IndexPage extends Component {
     const input = this.state.input
 
     return (
-      <div>
+      <div id="content">
         <input id="input" placeholder="GitHub Repository" value={input} onChange={this.handleChange}></input>
         <button type="button" onClick={this.printClick}>Hatch</button>
         <div>
