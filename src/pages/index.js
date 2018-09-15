@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Link from 'gatsby-link'
 import axios from 'axios'
+import Viz from '../components/viz'
 import './index.css'
 
 class IndexPage extends Component {
@@ -57,6 +58,10 @@ class IndexPage extends Component {
     .catch(err=>console.log(err))
   }
 
+  buildViz() {
+
+  }
+
   render() {
 
     const input = this.state.input
@@ -65,8 +70,8 @@ class IndexPage extends Component {
       <div>
         <input id="input" placeholder="GitHub Repository" value={input} onChange={this.handleChange}></input>
         <button type="button" onClick={this.printClick}>Hatch</button>
-        <div id="viz">
-
+        <div>
+          <Viz size={[500,500]} />
         </div>
       </div>
     )
